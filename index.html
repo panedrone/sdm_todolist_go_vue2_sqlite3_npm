@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/x-icon" href="static/favicon.ico">
+    <link rel="stylesheet" href="static/styles.css" type="text/css"/>
+    <title>Todo App</title>
+</head>
+
+<body>
+
+<div id="app" v-cloak>
+    <div>
+        <whoiam ref="ref_whoiam"></whoiam>
+    </div>
+    <table class="bg" style="padding: 4px;">
+        <tr>
+            <td>
+                <projects></projects>
+            </td>
+            <td>
+                <project_details></project_details>
+            </td>
+            <td>
+                <task_details></task_details>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<script src="static/dist/main.js"></script>
+
+</body>
