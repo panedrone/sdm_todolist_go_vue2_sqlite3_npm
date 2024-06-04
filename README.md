@@ -1,11 +1,9 @@
 A project demonstrating how to use [SQL DAL Maker](https://github.com/panedrone/sqldalmaker) + Golang.
 Front-end is written in Vue.js 2.7.
 
-[Part 1](./gorm): using "github.com/go-gorm/gorm"
-
-[Part 2](./sqlx): using "github.com/jmoiron/sqlx"
-
-[Part 3](./no_orm): using "database/sql" directly
+[Part 1](./gorm): using "github.com/go-gorm/gorm".<br/>
+[Part 2](./sqlx): using "github.com/jmoiron/sqlx".<br/>
+[Part 3](./no_orm): using "database/sql" directly.
 
 ![demo-go.png](demo-go.png)
 
