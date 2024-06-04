@@ -44,24 +44,30 @@ sdm.xml
 Generated code in action:
 
 ```go
-var (
-	prDao = dbal.NewProjectsDao()
-)
+type projectHandlers struct {
+	dao *dbal.ProjectsDao
+}
 
-func ProjectCreate(ctx *gin.Context) {
+func NewProjectHandlers() shared.ProjectHandlers {
+	return &projectHandlers{
+		dao: dbal.NewProjectsDao(),
+	}
+}
+
+func (h *projectHandlers) ProjectCreate(ctx *gin.Context) {
 	var req request.Project
 	if err := request.BindJSON(ctx, &req); err != nil {
 		return
 	}
-	if err := prDao.CreateProject(ctx, &m.Project{PName: req.PName}); err != nil {
+	if err := h.dao.CreateProject(ctx, &m.Project{PName: req.PName}); err != nil {
 		resp.Abort500(ctx, err)
 		return
 	}
 	ctx.Status(http.StatusCreated)
 }
 
-func ProjectsReadAll(ctx *gin.Context) {
-	all, err := prDao.ReadAll(ctx)
+func (h *projectHandlers) ProjectsReadAll(ctx *gin.Context) {
+	all, err := h.dao.ReadAll(ctx)
 	if err != nil {
 		resp.Abort500(ctx, err)
 		return
@@ -69,20 +75,24 @@ func ProjectsReadAll(ctx *gin.Context) {
 	resp.JSON(ctx, http.StatusOK, all)
 }
 
-func ProjectRead(ctx *gin.Context) {
+func (h *projectHandlers) ProjectRead(ctx *gin.Context) {
 	uri, err := request.GetProjectUri(ctx)
 	if err != nil {
 		return
 	}
-	pr, err := prDao.ReadProject(ctx, uri.PId)
+	pr, err := h.dao.ReadProject(ctx, uri.PId)
 	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			resp.Abort404(ctx, err)
+			return
+		}
 		resp.Abort500(ctx, err)
 		return
 	}
 	resp.JSON(ctx, http.StatusOK, pr)
 }
 
-func ProjectUpdate(ctx *gin.Context) {
+func (h *projectHandlers) ProjectUpdate(ctx *gin.Context) {
 	uri, err := request.GetProjectUri(ctx)
 	if err != nil {
 		return
@@ -92,17 +102,17 @@ func ProjectUpdate(ctx *gin.Context) {
 		return
 	}
 	pr := &m.Project{PId: uri.PId, PName: req.PName}
-	if _, err := prDao.UpdateProject(ctx, pr); err != nil {
+	if _, err := h.dao.UpdateProject(ctx, pr); err != nil {
 		resp.Abort500(ctx, err)
 	}
 }
 
-func ProjectDelete(ctx *gin.Context) {
+func (h *projectHandlers) ProjectDelete(ctx *gin.Context) {
 	uri, err := request.GetProjectUri(ctx)
 	if err != nil {
 		return
 	}
-	if _, err := prDao.DeleteProject(ctx, &m.Project{PId: uri.PId}); err != nil {
+	if _, err := h.dao.DeleteProject(ctx, &m.Project{PId: uri.PId}); err != nil {
 		resp.Abort500(ctx, err)
 		return
 	}
