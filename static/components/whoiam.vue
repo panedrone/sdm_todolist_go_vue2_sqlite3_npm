@@ -2,7 +2,7 @@
 import Vue from "vue";
 
 import fire from "./event_bus";
-import * as api from "./api";
+import {getText} from "./api";
 
 export default {
   data() {
@@ -16,7 +16,7 @@ export default {
   },
   methods: {
     renderWhoIAm() {
-      api.fetchText('api/whoiam', (text) => {
+      getText('api/whoiam', (text) => {
         if (!text) {
           return
         }

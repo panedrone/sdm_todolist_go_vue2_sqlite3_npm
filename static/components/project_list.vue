@@ -1,6 +1,6 @@
 <script>
 import fire from "./event_bus";
-import * as api from './api'
+import {getJsonArray, postJson201} from "./api";
 
 const PROJECT = {"p_id": -1, "p_name": null, "p_tasks_count": -1}
 
@@ -16,7 +16,7 @@ export default {
   },
   methods: {
     renderProjects() {
-      api.fetchJsonArray("api/projects", (arr) => {
+      getJsonArray("api/projects", (arr) => {
         this.projects = arr
       })
     },
@@ -25,7 +25,7 @@ export default {
     },
     projectCreate() {
       let json = JSON.stringify({"p_name": this.p_name})
-      api.postJson201("api/projects", json, () => {
+      postJson201("api/projects", json, () => {
         this.renderProjects();
       })
     },

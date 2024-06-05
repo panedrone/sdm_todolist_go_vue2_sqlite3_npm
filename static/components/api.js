@@ -5,7 +5,7 @@ const JSON_HEADERS = {
     'Content-Type': 'application/json'
 };
 
-export function fetchJson(uri, onSuccess) {
+export function getJson(uri, onSuccess) {
     fetch(uri)
         .then(async (resp) => {
             if (resp.status === 200) {
@@ -20,7 +20,7 @@ export function fetchJson(uri, onSuccess) {
         })
 }
 
-export function fetchJsonArray(uri, onSuccess){
+export function getJsonArray(uri, onSuccess){
     fetch(uri)
         .then(async (resp) => {
             if (resp.status === 200) {
@@ -35,7 +35,7 @@ export function fetchJsonArray(uri, onSuccess){
         })
 }
 
-export function fetchText(uri, onSuccess) {
+export function getText(uri, onSuccess) {
     fetch(uri)
         .then(async (resp) => {
             if (resp.status === 200) {

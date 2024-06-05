@@ -1,6 +1,6 @@
 <script>
-import * as api from './api'
 import fire from "./event_bus";
+import {delete204, getJson, getJsonArray, postJson201, putJson200} from "./api";
 
 const NO_PROJECT = {"p_id": -1, "p_name": null, "p_tasks_count": -1}
 const TASK = {"t_id": -1, "t_date": null, "t_subject": null, "t_priority": -1}
@@ -30,25 +30,25 @@ export default {
       this.show_project_details = true
     },
     renderCurrentProject(p_id) {
-      api.fetchJson("api/projects/" + p_id, (json) => {
+      getJson("api/projects/" + p_id, (json) => {
         this.current_project = json
       })
     },
     renderProjectTasks(p_id) {
-      api.fetchJsonArray("api/projects/" + p_id + "/tasks", (arr) => {
+      getJsonArray("api/projects/" + p_id + "/tasks", (arr) => {
         this.tasks = arr
       })
     },
     projectUpdate() {
       let p_id = this.current_project.p_id
       let json = JSON.stringify(this.current_project)
-      api.putJson200("api/projects/" + p_id, json, () => {
+      putJson200("api/projects/" + p_id, json, () => {
         fire.renderProjects();
       })
     },
     projectDelete() {
       let p_id = this.current_project.p_id
-      api.delete204("api/projects/" + p_id, () => {
+      delete204("api/projects/" + p_id, () => {
         this.hideProjectDetails()
         fire.renderProjects();
       })
@@ -56,7 +56,7 @@ export default {
     taskCreate() {
       let p_id = this.current_project.p_id
       let json = JSON.stringify({"t_subject": this.t_subject})
-      api.postJson201("api/projects/" + p_id + "/tasks", json, () => {
+      postJson201("api/projects/" + p_id + "/tasks", json, () => {
         fire.renderProjects(); // update tasks count
         this.renderProjectDetails(p_id);
       })

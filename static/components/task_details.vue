@@ -1,6 +1,6 @@
 <script>
-import * as api from "./api";
 import fire from "./event_bus";
+import {delete204, getJson, putJson, unicodeToChar} from "./api";
 
 const NO_TASK = {"t_id": -1, "p_id": -1, "t_date": null, "t_subject": null, "t_priority": -1, "t_comments": null}
 
@@ -22,7 +22,7 @@ export default {
       this.show_task_details = false
     },
     renderTaskDetails(t_id) {
-      api.fetchJson("api/tasks/" + t_id, (json) => {
+      getJson("api/tasks/" + t_id, (json) => {
         this.current_subject = json.t_subject;
         this.current_task = json;
         this.task_error = null;
@@ -36,7 +36,7 @@ export default {
       let json = JSON.stringify(this.current_task)
       let p_id = this.current_task.p_id
       let t_id = this.current_task.t_id
-      api.putJson("api/tasks/" + t_id, json, async (resp) => {
+      putJson("api/tasks/" + t_id, json, async (resp) => {
         if (resp.status === 200) {
           fire.renderProjectTasks(p_id);
           this.renderTaskDetails(t_id);
@@ -47,7 +47,7 @@ export default {
     },
     async _showTaskError(resp) {
       let msg = await resp.text()
-      msg = api.unicodeToChar(msg);
+      msg = unicodeToChar(msg);
       // https://stackoverflow.com/questions/6640382/how-to-remove-backslash-escaping-from-a-javascript-var
       msg = msg.replace(/\\\\"/g, '"');
       msg = msg.replace(/\\"/g, '"');
@@ -57,7 +57,7 @@ export default {
     taskDelete() {
       let p_id = this.current_task.p_id
       let t_id = this.current_task.t_id
-      api.delete204("api/tasks/" + t_id, () => {
+      delete204("api/tasks/" + t_id, () => {
         this.hideTaskDetails()
         fire.renderProjects(); // update tasks count
         fire.renderProjectTasks(p_id);
