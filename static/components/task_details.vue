@@ -42,29 +42,26 @@ export default {
           this.renderTaskDetails(t_id);
           return
         }
-        let text = await resp.text()
-        this.task_error = (resp.status + "\n" + text);
+        await this._showTaskError(resp);
       })
+    },
+    async _showTaskError(resp) {
+      let msg = await resp.text()
+      msg = api.unicodeToChar(msg);
+      // https://stackoverflow.com/questions/6640382/how-to-remove-backslash-escaping-from-a-javascript-var
+      msg = msg.replace(/\\\\"/g, '"');
+      msg = msg.replace(/\\"/g, '"');
+      msg = resp.status.toString() + " ==> " + msg
+      this.task_error = msg
     },
     taskDelete() {
       let p_id = this.current_task.p_id
       let t_id = this.current_task.t_id
-      fetch("api/tasks/" + t_id, {
-        method: "delete"
+      api.delete204("api/tasks/" + t_id, () => {
+        this.hideTaskDetails()
+        fire.renderProjects(); // update tasks count
+        fire.renderProjectTasks(p_id);
       })
-          .then(async (resp) => {
-            if (resp.status === 204) {
-              this.hideTaskDetails()
-              fire.renderProjects(); // update tasks count
-              fire.renderProjectTasks(p_id);
-            } else {
-              let text = await resp.text()
-              alert(resp.status + "\n" + text);
-            }
-          })
-          .catch((reason) => {
-            console.log(reason)
-          })
     },
   }
 }

@@ -1,5 +1,4 @@
 <script>
-
 import * as api from './api'
 import fire from "./event_bus";
 
@@ -43,40 +42,16 @@ export default {
     projectUpdate() {
       let p_id = this.current_project.p_id
       let json = JSON.stringify(this.current_project)
-      fetch("/api/projects/" + p_id, {
-        method: 'put',
-        headers: api.JSON_HEADERS,
-        body: json
+      api.putJson200("api/projects/" + p_id, json, () => {
+        fire.renderProjects();
       })
-          .then(async (resp) => {
-            if (resp.status === 200) {
-              fire.renderProjects();
-            } else {
-              let j = await resp.text()
-              alert(resp.status + "\n" + j);
-            }
-          })
-          .catch((reason) => {
-            console.log(reason)
-          })
     },
     projectDelete() {
       let p_id = this.current_project.p_id
-      fetch("/api/projects/" + p_id, {
-        method: 'delete'
+      api.delete204("api/projects/" + p_id, () => {
+        this.hideProjectDetails()
+        fire.renderProjects();
       })
-          .then(async (resp) => {
-            if (resp.status === 204) {
-              this.hideProjectDetails()
-              fire.renderProjects();
-            } else {
-              let j = await resp.text()
-              alert(resp.status + "\n" + j);
-            }
-          })
-          .catch((reason) => {
-            console.log(reason)
-          })
     },
     taskCreate() {
       let p_id = this.current_project.p_id

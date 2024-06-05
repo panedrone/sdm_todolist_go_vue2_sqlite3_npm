@@ -1,7 +1,6 @@
 <script>
 import fire from "./event_bus";
 import * as api from './api'
-import * as api from "./api";
 
 const PROJECT = {"p_id": -1, "p_name": null, "p_tasks_count": -1}
 
