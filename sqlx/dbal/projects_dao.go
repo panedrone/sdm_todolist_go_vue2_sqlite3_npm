@@ -67,15 +67,6 @@ func (dao *ProjectsDao) GetProjectIds(ctx context.Context) (res []int64, err err
 		(select count(*) from tasks where p_id=p.p_id) as p_tasks_count 
 		from projects p 
 		order by p.p_id`
-	errMap := make(map[string]int)
-	onRow := func(val interface{}) {
-		var data int64
-		SetScalarValue(&data, val, errMap)
-		res = append(res, data)
-	}
-	err = dao.ds.QueryAll(ctx, sql, onRow)
-	if err == nil {
-		err = ErrMapToErr(errMap)
-	}
+	err = dao.ds.QueryAll(ctx, sql, &res)
 	return
 }
