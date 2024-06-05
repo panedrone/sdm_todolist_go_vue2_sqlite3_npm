@@ -22,22 +22,12 @@ export default {
       this.show_task_details = false
     },
     renderTaskDetails(t_id) {
-      fetch("/api/tasks/" + t_id)
-          .then(async (resp) => {
-            if (resp.status === 200) {
-              let task = await resp.json()
-              this.current_subject = task.t_subject;
-              this.current_task = task;
-              this.task_error = null;
-              this.show_task_details = true
-            } else {
-              let j = await resp.text()
-              alert(resp.status + "\n" + j);
-            }
-          })
-          .catch((reason) => {
-            console.log(reason)
-          })
+      api.fetchJson("api/tasks/" + t_id, (json) => {
+        this.current_subject = json.t_subject;
+        this.current_task = json;
+        this.task_error = null;
+        this.show_task_details = true
+      })
     },
     taskUpdate() {
       if (!isNaN(this.current_task.t_priority)) {
@@ -46,28 +36,20 @@ export default {
       let json = JSON.stringify(this.current_task)
       let p_id = this.current_task.p_id
       let t_id = this.current_task.t_id
-      fetch("/api/tasks/" + t_id, {
-        method: 'put',
-        headers: api.JSON_HEADERS,
-        body: json
+      api.putJson("api/tasks/" + t_id, json, async (resp) => {
+        if (resp.status === 200) {
+          fire.renderProjectTasks(p_id);
+          this.renderTaskDetails(t_id);
+          return
+        }
+        let text = await resp.text()
+        this.task_error = (resp.status + "\n" + text);
       })
-          .then(async (resp) => {
-            if (resp.status === 200) {
-              fire.renderProjectTasks(p_id);
-              this.renderTaskDetails(t_id);
-            } else {
-              let text = await resp.text()
-              this.task_error = (resp.status + "\n" + text);
-            }
-          })
-          .catch((reason) => {
-            console.log(reason)
-          })
     },
     taskDelete() {
       let p_id = this.current_task.p_id
       let t_id = this.current_task.t_id
-      fetch("/api/tasks/" + t_id, {
+      fetch("api/tasks/" + t_id, {
         method: "delete"
       })
           .then(async (resp) => {

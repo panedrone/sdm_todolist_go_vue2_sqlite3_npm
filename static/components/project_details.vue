@@ -1,6 +1,6 @@
 <script>
 
-import * as shared from './api'
+import * as api from './api'
 import fire from "./event_bus";
 
 const NO_PROJECT = {"p_id": -1, "p_name": null, "p_tasks_count": -1}
@@ -31,12 +31,12 @@ export default {
       this.show_project_details = true
     },
     renderCurrentProject(p_id) {
-      shared.fetchJson("api/projects/" + p_id, (json) => {
+      api.fetchJson("api/projects/" + p_id, (json) => {
         this.current_project = json
       })
     },
     renderProjectTasks(p_id) {
-      shared.fetchJsonArray("api/projects/" + p_id + "/tasks", (arr) => {
+      api.fetchJsonArray("api/projects/" + p_id + "/tasks", (arr) => {
         this.tasks = arr
       })
     },
@@ -45,7 +45,7 @@ export default {
       let json = JSON.stringify(this.current_project)
       fetch("/api/projects/" + p_id, {
         method: 'put',
-        headers: shared.JSON_HEADERS,
+        headers: api.JSON_HEADERS,
         body: json
       })
           .then(async (resp) => {
@@ -81,23 +81,10 @@ export default {
     taskCreate() {
       let p_id = this.current_project.p_id
       let json = JSON.stringify({"t_subject": this.t_subject})
-      fetch("/api/projects/" + p_id + "/tasks", {
-        method: 'post',
-        headers: shared.JSON_HEADERS,
-        body: json
+      api.postJson201("api/projects/" + p_id + "/tasks", json, () => {
+        fire.renderProjects(); // update tasks count
+        this.renderProjectDetails(p_id);
       })
-          .then(async (resp) => {
-            if (resp.status === 201) {
-              fire.renderProjects(); // update tasks count
-              this.renderProjectDetails(p_id);
-            } else {
-              let text = await resp.text()
-              alert(resp.status + "\n" + text);
-            }
-          })
-          .catch((reason) => {
-            console.log(reason)
-          })
     },
     renderTaskDetails(t_id) {
       // this.$root.renderTaskDetails(t_id);

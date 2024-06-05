@@ -5,12 +5,12 @@ const JSON_HEADERS = {
     'Content-Type': 'application/json'
 };
 
-export function fetchJson(uri, processJson) {
+export function fetchJson(uri, onSuccess) {
     fetch(uri)
         .then(async (resp) => {
             if (resp.status === 200) {
                 let json = await resp.json()
-                processJson(json)
+                onSuccess(json)
                 return
             }
             await _showStatusError(resp);
@@ -20,12 +20,12 @@ export function fetchJson(uri, processJson) {
         })
 }
 
-export function fetchJsonArray(uri, processArray){
+export function fetchJsonArray(uri, onSuccess){
     fetch(uri)
         .then(async (resp) => {
             if (resp.status === 200) {
                 let arr = await _responseToArray(resp)
-                processArray(arr)
+                onSuccess(arr)
                 return
             }
             await _showStatusError(resp);
@@ -35,12 +35,12 @@ export function fetchJsonArray(uri, processArray){
         })
 }
 
-export function fetchText(uri, processText) {
+export function fetchText(uri, onSuccess) {
     fetch(uri)
         .then(async (resp) => {
             if (resp.status === 200) {
                 let text = await resp.text()
-                processText(text)
+                onSuccess(text)
                 return
             }
             await _showStatusError(resp);

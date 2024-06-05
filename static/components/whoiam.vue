@@ -40,7 +40,7 @@ export default {
         </h2>
       </td>
       <td v-if="is_sqlx">
-        <a href="/swagger/index.html">Swagger</a>
+        <a href="swagger/index.html">Swagger</a>
       </td>
     </tr>
   </table>

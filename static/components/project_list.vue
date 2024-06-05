@@ -1,6 +1,7 @@
 <script>
 import fire from "./event_bus";
 import * as api from './api'
+import * as api from "./api";
 
 const PROJECT = {"p_id": -1, "p_name": null, "p_tasks_count": -1}
 
@@ -25,22 +26,9 @@ export default {
     },
     projectCreate() {
       let json = JSON.stringify({"p_name": this.p_name})
-      fetch("/api/projects", {
-        method: 'post',
-        headers: api.JSON_HEADERS,
-        body: json
+      api.postJson201("api/projects", json, () => {
+        this.renderProjects();
       })
-          .then(async (resp) => {
-            if (resp.status === 201) {
-              this.renderProjects();
-            } else {
-              let j = await resp.text()
-              alert(resp.status + "\n" + j);
-            }
-          })
-          .catch((reason) => {
-            console.log(reason)
-          })
     },
   }
 }
