@@ -63,6 +63,9 @@ export default {
         fire.renderProjectTasks(p_id);
       })
     },
+    hideTaskError() {
+      this.task_error = null
+    }
   }
 }
 </script>
@@ -128,8 +131,12 @@ export default {
         </td>
       </tr>
     </table>
-    <div style="color: crimson;max-width: 310px;">
-      {{ task_error }}
+    <div style="color: crimson;max-width: 310px;"  v-if="task_error !== null">
+      <div>
+        <button @click="hideTaskError()">&#x2713;</button>
+        &nbsp;
+        <strong>Error:</strong>&nbsp;{{ task_error }}
+      </div>
     </div>
   </div>
 </template>
