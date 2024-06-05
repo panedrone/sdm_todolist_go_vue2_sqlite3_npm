@@ -1,7 +1,7 @@
 <script>
 
-import * as shared from './shared.js'
-import my_event_bus from "./my_event_bus";
+import * as shared from './api'
+import fire from "./event_bus";
 
 const NO_PROJECT = {"p_id": -1, "p_name": null, "p_tasks_count": -1}
 const TASK = {"t_id": -1, "t_date": null, "t_subject": null, "t_priority": -1}
@@ -16,13 +16,13 @@ export default {
     }
   },
   created() {
-    my_event_bus.hideProjectDetails = this.hideProjectDetails;
-    my_event_bus.renderProjectDetails = this.renderProjectDetails;
-    my_event_bus.renderProjectTasks = this.renderProjectTasks;
+    fire.hideProjectDetails = this.hideProjectDetails;
+    fire.renderProjectDetails = this.renderProjectDetails;
+    fire.renderProjectTasks = this.renderProjectTasks;
   },
   methods: {
     hideProjectDetails() {
-      my_event_bus.hideTaskDetails()
+      fire.hideTaskDetails()
       this.show_project_details = false
     },
     renderProjectDetails(p_id) {
@@ -31,32 +31,14 @@ export default {
       this.show_project_details = true
     },
     renderCurrentProject(p_id) {
-      fetch("/api/projects/" + p_id)
-          .then(async (resp) => {
-            if (resp.status === 200) {
-              this.current_project = await resp.json()
-            } else {
-              let j = await resp.text()
-              alert(resp.status + "\n" + j);
-            }
-          })
-          .catch((reason) => {
-            console.log(reason)
-          })
+      shared.fetchJson("api/projects/" + p_id, (json) => {
+        this.current_project = json
+      })
     },
     renderProjectTasks(p_id) {
-      fetch("/api/projects/" + p_id + "/tasks")
-          .then(async (resp) => {
-            if (resp.status === 200) {
-              this.tasks = await resp.json()
-            } else {
-              let j = await resp.text()
-              alert(resp.status + "\n" + j);
-            }
-          })
-          .catch((reason) => {
-            console.log(reason)
-          })
+      shared.fetchJsonArray("api/projects/" + p_id + "/tasks", (arr) => {
+        this.tasks = arr
+      })
     },
     projectUpdate() {
       let p_id = this.current_project.p_id
@@ -68,7 +50,7 @@ export default {
       })
           .then(async (resp) => {
             if (resp.status === 200) {
-              my_event_bus.renderProjects();
+              fire.renderProjects();
             } else {
               let j = await resp.text()
               alert(resp.status + "\n" + j);
@@ -86,7 +68,7 @@ export default {
           .then(async (resp) => {
             if (resp.status === 204) {
               this.hideProjectDetails()
-              my_event_bus.renderProjects();
+              fire.renderProjects();
             } else {
               let j = await resp.text()
               alert(resp.status + "\n" + j);
@@ -106,7 +88,7 @@ export default {
       })
           .then(async (resp) => {
             if (resp.status === 201) {
-              my_event_bus.renderProjects(); // update tasks count
+              fire.renderProjects(); // update tasks count
               this.renderProjectDetails(p_id);
             } else {
               let text = await resp.text()
@@ -119,7 +101,7 @@ export default {
     },
     renderTaskDetails(t_id) {
       // this.$root.renderTaskDetails(t_id);
-      my_event_bus.renderTaskDetails(t_id)
+      fire.renderTaskDetails(t_id)
     }
   }
 }

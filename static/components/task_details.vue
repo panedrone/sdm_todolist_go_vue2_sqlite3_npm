@@ -1,6 +1,6 @@
 <script>
-import * as shared from "./shared";
-import my_event_bus from "./my_event_bus";
+import * as api from "./api";
+import fire from "./event_bus";
 
 const NO_TASK = {"t_id": -1, "p_id": -1, "t_date": null, "t_subject": null, "t_priority": -1, "t_comments": null}
 
@@ -14,8 +14,8 @@ export default {
     }
   },
   created() {
-    my_event_bus.renderTaskDetails = this.renderTaskDetails
-    my_event_bus.hideTaskDetails = this.hideTaskDetails
+    fire.renderTaskDetails = this.renderTaskDetails
+    fire.hideTaskDetails = this.hideTaskDetails
   },
   methods: {
     hideTaskDetails() {
@@ -48,12 +48,12 @@ export default {
       let t_id = this.current_task.t_id
       fetch("/api/tasks/" + t_id, {
         method: 'put',
-        headers: shared.JSON_HEADERS,
+        headers: api.JSON_HEADERS,
         body: json
       })
           .then(async (resp) => {
             if (resp.status === 200) {
-              my_event_bus.renderProjectTasks(p_id);
+              fire.renderProjectTasks(p_id);
               this.renderTaskDetails(t_id);
             } else {
               let text = await resp.text()
@@ -73,8 +73,8 @@ export default {
           .then(async (resp) => {
             if (resp.status === 204) {
               this.hideTaskDetails()
-              my_event_bus.renderProjects(); // update tasks count
-              my_event_bus.renderProjectTasks(p_id);
+              fire.renderProjects(); // update tasks count
+              fire.renderProjectTasks(p_id);
             } else {
               let text = await resp.text()
               alert(resp.status + "\n" + text);

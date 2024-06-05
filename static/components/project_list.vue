@@ -1,9 +1,8 @@
 <script>
-import my_event_bus from "./my_event_bus";
+import fire from "./event_bus";
+import * as api from './api'
 
 const PROJECT = {"p_id": -1, "p_name": null, "p_tasks_count": -1}
-
-import * as shared from './shared.js'
 
 export default {
   data() {
@@ -13,31 +12,22 @@ export default {
     }
   },
   created() {
-    my_event_bus.renderProjects = this.renderProjects;
+    fire.renderProjects = this.renderProjects;
   },
   methods: {
     renderProjects() {
-      fetch("/api/projects")
-          .then(async (resp) => {
-            if (resp.status === 200) {
-              this.projects = await resp.json()
-            } else {
-              let j = await resp.text()
-              alert(resp.status + "\n" + j);
-            }
-          })
-          .catch((reason) => {
-            console.log(reason)
-          })
+      api.fetchJsonArray("api/projects", (arr) => {
+        this.projects = arr
+      })
     },
     renderProjectDetails(p_id) {
-      my_event_bus.renderProjectDetails(p_id)
+      fire.renderProjectDetails(p_id)
     },
     projectCreate() {
       let json = JSON.stringify({"p_name": this.p_name})
       fetch("/api/projects", {
         method: 'post',
-        headers: shared.JSON_HEADERS,
+        headers: api.JSON_HEADERS,
         body: json
       })
           .then(async (resp) => {

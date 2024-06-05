@@ -31,6 +31,10 @@ table.bg td {
     width: 1%;
 }
 
+.red-banner {
+    color: crimson;
+}
+
 input {
     /*https://stackoverflow.com/questions/3059132/how-to-make-an-input-element-with-5px-padding-fill-an-entire-td*/
     box-sizing: border-box;
