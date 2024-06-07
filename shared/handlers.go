@@ -29,11 +29,11 @@ func AssignHandlers(
 
 	//  https://hoohoo.top/blog/20210530112304-golang-tutorial-introduction-gin-html-template-and-how-integration-with-bootstrap/
 
-	myRouter.Static("/static", "./static")
+	myRouter.Static("/static", "./front-end/static")
 
 	// === panedrone: type "http://localhost:8080" to render index.html
 
-	myRouter.StaticFile("/", "./index.html")
+	myRouter.StaticFile("/", "./front-end/index.html")
 
 	/////////////////////////////////////////
 

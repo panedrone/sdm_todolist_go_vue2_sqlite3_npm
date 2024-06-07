@@ -1,7 +1,6 @@
 package dbal
 
 import (
-	"context"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -11,7 +10,7 @@ import (
 var ds = &_DS{} // private for this package
 
 func (ds *_DS) initDb() (err error) {
-	ds.rootDb, err = gorm.Open(sqlite.Open("./todolist.sqlite"), &gorm.Config{
+	ds.rootDb, err = gorm.Open(sqlite.Open("./db/todolist.sqlite"), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 	})
 	return
@@ -23,16 +22,16 @@ func (ds *_DS) initDb() (err error) {
 //		ctx.Set("db", dal.WithContext(ctx))
 //	})
 
-func WithContext(ctx context.Context) *gorm.DB {
-	//	https://gorm.io/docs/method_chaining.html
-	//
-	//	getTx := db.Where("name = ?", "jinzhu").Session(&gorm.Session{})
-	//	getTx := db.Where("name = ?", "jinzhu").WithContext(context.Background())
-	//	getTx := db.Where("name = ?", "jinzhu").Debug()
-	//	// `Session`, `WithContext`, `Debug` returns `*gorm.DB` marked as safe to reuse, newly initialized `*gorm.Statement` based on it keeps current conditions
-	//
-	return ds.rootDb.WithContext(ctx)
-}
+//func WithContext(ctx context.Context) *gorm.DB {
+//	//	https://gorm.io/docs/method_chaining.html
+//	//
+//	//	getTx := db.Where("name = ?", "jinzhu").Session(&gorm.Session{})
+//	//	getTx := db.Where("name = ?", "jinzhu").WithContext(context.Background())
+//	//	getTx := db.Where("name = ?", "jinzhu").Debug()
+//	//	// `Session`, `WithContext`, `Debug` returns `*gorm.DB` marked as safe to reuse, newly initialized `*gorm.Statement` based on it keeps current conditions
+//	//
+//	return ds.rootDb.WithContext(ctx)
+//}
 
 func OpenDB() error {
 	return ds.Open()

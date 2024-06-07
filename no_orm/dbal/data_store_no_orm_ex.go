@@ -8,7 +8,7 @@ import (
 var ds = &_DS{}
 
 func (ds *_DS) initDb() (err error) {
-	ds.db, err = sql.Open("sqlite3", "./todolist.sqlite")
+	ds.db, err = sql.Open("sqlite3", "./db/todolist.sqlite")
 	return
 }
 

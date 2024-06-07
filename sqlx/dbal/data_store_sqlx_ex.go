@@ -13,7 +13,7 @@ import (
 var ds = &_DS{}
 
 func (ds *_DS) initDb() (err error) {
-	ds.db, err = sqlx.Open("sqlite3", "./todolist.sqlite")
+	ds.db, err = sqlx.Open("sqlite3", "./db/todolist.sqlite")
 	// === PostgeSQL ===========================
 	//ds.paramPrefix = "$"
 	//ds.db, err = sqlx.Open("postgres", "postgres://postgres:sa@localhost/my-tests?sslmode=disable")
