@@ -6,16 +6,6 @@ import project_details from "./components/project_details.vue";
 import task_details from "./components/task_details.vue";
 import fire from "./components/event_bus";
 
-class Huy {
-    constructor() {
-        const hello = () => {
-            console.log("hello");
-        }
-
-        hello()
-    }
-}
-
 new Vue({
     el: "#app",
     components: {
@@ -33,7 +23,5 @@ new Vue({
     mounted() { // https://codepen.io/g2g/pen/mdyeoXB
         fire.renderWhoIAm();
         fire.renderProjects();
-
-        new Huy()
     },
 })
