@@ -1,5 +1,5 @@
 {
-  "name": "sdm_todolist_go_vue2_sqlite3_npm",
+  "name": "sdm_todolist_go_vue2_sqlite3_npm_no_babel",
   "version": "1.0.0",
   "description": "A project demonstrating how to use SQL DAL Maker + Golang.",
   "main": "index.js",
@@ -18,9 +18,6 @@
     "vue": "^2.7.16"
   },
   "devDependencies": {
-    "@babel/core": "^7.24.6",
-    "@babel/preset-env": "^7.24.6",
-    "babel-loader": "^9.1.3",
     "vue-loader": "^15.11.1",
     "vue-template-compiler": "^2.7.16",
     "webpack": "^5.91.0",

@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/sdm_todolist_go_vue2_sqlite3_npm.iml" filepath="$PROJECT_DIR$/.idea/sdm_todolist_go_vue2_sqlite3_npm.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/sdm_todolist_go_vue2_sqlite3_npm_no_babel.iml" filepath="$PROJECT_DIR$/.idea/sdm_todolist_go_vue2_sqlite3_npm_no_babel.iml" />
     </modules>
   </component>
 </project>
