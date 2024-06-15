@@ -4,7 +4,7 @@
   "description": "A project demonstrating how to use SQL DAL Maker + Golang.",
   "main": "index.js",
   "directories": {
-    "lib": "lib"
+    "lib": "../lib"
   },
   "scripts": {
     "prod": "webpack --mode production",
