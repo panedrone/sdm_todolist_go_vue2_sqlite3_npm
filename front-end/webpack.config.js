@@ -11,7 +11,7 @@ const config = {
     entry: {
         // https://www.youtube.com/watch?v=JcKRovPhGo8&ab_channel=Tocode
         // 14:50
-        main: './front-end/static/app.js'
+        main: './static/app.js'
     },
     resolve: { // package.json.PANEDRONE.vue_2.7
         alias: {
@@ -19,7 +19,7 @@ const config = {
         }
     },
     output: {
-        path: path.resolve(__dirname, './front-end/static/dist'),
+        path: path.resolve(__dirname, './static/dist'),
         // https://www.youtube.com/watch?v=JcKRovPhGo8&ab_channel=Tocode
         // 34:40
         filename: '[name].js',
