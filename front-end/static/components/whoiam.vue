@@ -23,8 +23,8 @@ export default {
         if (text.includes('sqlx')) {
           this.is_sqlx = true
         }
-        this.value = text + ", npm, vue " + Vue.version
-        document.title = 'SDM Todo-App, npm, vue ' + Vue.version
+        this.value = text + ", npm, no-babel, vue " + Vue.version
+        document.title = 'SDM Todo-App, npm, no-babel, vue ' + Vue.version
       })
     },
   }

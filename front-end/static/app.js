@@ -15,8 +15,7 @@ new Vue({
         project_details,
         task_details
     },
-    methods: {
-    },
+    methods: {},
     created() {
     },
     updated() {
