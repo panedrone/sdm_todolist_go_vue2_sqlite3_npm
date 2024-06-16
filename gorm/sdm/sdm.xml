@@ -12,13 +12,20 @@
 
     </dto-class>
 
-    <dto-class name="gorm-TaskBase" ref="tasks"/>
+    <dto-class name="gorm-Task" ref="tasks">
+        <header>// Task can be used in "AutoMigrate"</header>
+        <custom>
+            TId // PK
+            PId // FK ref. column -> Project
+            Project Project `gorm:"foreignKey:PId;references:PId"` // FK
+        </custom>
+    </dto-class>
 
     <dto-class name="gorm-TaskLi" ref="tasks">
 
         <header>// TaskLi: a `target` list item having no "t_comments"</header>
 
-<!--        <field column="p_id" type="-"/>-->
+        <!--        <field column="p_id" type="-"/>-->
         <field column="t_comments" type="-"/>
 
     </dto-class>
@@ -35,7 +42,7 @@
 
     <dao-class name="TasksDao">
 
-        <crud dto="gorm-TaskBase"/>
+        <crud dto="gorm-Task"/>
 
         <!--    testing on "raw" and field-assign-mode="3" -->
 

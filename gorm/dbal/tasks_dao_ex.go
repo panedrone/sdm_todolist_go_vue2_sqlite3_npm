@@ -13,9 +13,7 @@ import (
 //      ----- this is the best one so far -----
 
 func (dao *TasksDao) ReadProjectTasks(ctx context.Context, pId int64) (res []*models.TaskLi, err error) {
-	queryModel := &models.Task{
-		TaskBase: models.TaskBase{PId: pId},
-	}
+	queryModel := &models.Task{PId: pId}
 	err = dao.ds.Session(ctx).Model(queryModel).
 		// Select("t_id", "t_date", "t_subject", "t_priority").
 		Where(queryModel). // https://gist.github.com/WangYihang/7d43d70db432ff8f3a0a88425bfca7f2

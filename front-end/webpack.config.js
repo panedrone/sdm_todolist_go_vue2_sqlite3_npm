@@ -1,7 +1,7 @@
 const path = require('path');
 //const VueLoaderPlugin = require('vue-loader/lib/plugin')
 // https://github.com/vuejs/vue-loader/issues/1688
-const { VueLoaderPlugin } = require('vue-loader')
+const {VueLoaderPlugin} = require('vue-loader')
 
 // module.exports = {
 const config = {
@@ -19,18 +19,19 @@ const config = {
         }
     },
     output: {
-        path: path.resolve(__dirname, './static/dist'),
         // https://www.youtube.com/watch?v=JcKRovPhGo8&ab_channel=Tocode
         // 34:40
-        filename: '[name].js',
+        path: path.resolve(__dirname, './static/dist'),
         // https://www.youtube.com/watch?v=JcKRovPhGo8&ab_channel=Tocode
         // 16:40
-        // publicPath нам нужен для дев-сервера
-        // 20:50
-        // '/dist' без точки (===panedrone: http://localhost:3001/dist/main.js)
-        publicPath: '/dist',
+        filename: '[name].js',
+        // publicPath is required for dev-server
         // https://www.youtube.com/watch?v=JcKRovPhGo8&ab_channel=Tocode
-        // 21:50 --- девсервер хранит папку дист в памяти
+        // 21:50 --- dev server stores "dist" folder in memory
+        // '/dist' without leading "." (===panedrone: http://localhost:3001/dist/main.js)
+        publicPath: '/dist',
+        // https://docs.google.com/document/d/19rVPWxqQLlxvz9TG8mqijNPMJJb5ggwhMpMzVhRZMU4/edit
+        clean: true
     },
     devServer: {
         port: 3001,
@@ -58,7 +59,17 @@ const config = {
                 use: [
                     "vue-loader"
                 ]
-            }
+            },
+            {
+                test: /\.js$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: "babel-loader",
+                    options: {
+                        presets: ['@babel/preset-env']
+                    }
+                }
+            },
             // {
             //     test: /\.css$/,
             //     use: [

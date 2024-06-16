@@ -9,7 +9,12 @@
         <field type="int64$" column="p_tasks_count"/>
     </dto-class>
 
-    <dto-class name="Task" ref="tasks"/>
+    <dto-class name="Task" ref="tasks">
+        <custom>
+            TId // PK
+            PId // FK ref. column -> Project
+        </custom>
+    </dto-class>
 
     <dto-class name="TaskLi" ref="tasks">
 

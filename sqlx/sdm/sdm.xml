@@ -12,7 +12,12 @@
 
     </dto-class>
 
-    <dto-class name="sqlx-Task" ref="tasks"/>
+    <dto-class name="sqlx-Task" ref="tasks">
+        <custom>
+            TId // PK
+            PId // FK ref. column -> Project
+        </custom>
+    </dto-class>
 
     <dto-class name="sqlx-TaskLi" ref="tasks">
 
