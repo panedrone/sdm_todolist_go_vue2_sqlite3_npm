@@ -24,7 +24,7 @@ export default {
           this.is_sqlx = true
         }
         this.value = text + ", npm, babel, vue " + Vue.version
-        document.title = 'SDM Todo-App, npm, babel, vue ' + Vue.version
+        document.title = 'SDM Todo, npm, babel, vue ' + Vue.version
       })
     },
   }
@@ -32,18 +32,9 @@ export default {
 </script>
 
 <template>
-  <table>
-    <tr>
-      <td>
-        <h2>
-          {{ value }}
-        </h2>
-      </td>
-      <td v-if="is_sqlx">
-        <a href="swagger/index.html">Swagger</a>
-      </td>
-    </tr>
-  </table>
+  <div>
+    {{ value }}<span v-if="is_sqlx">, <a href="swagger/index.html">swagger</a></span>
+  </div>
 </template>
 
 <style>

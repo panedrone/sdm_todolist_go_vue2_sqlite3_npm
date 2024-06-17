@@ -3,15 +3,16 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"log"
-	"sdm_demo_todolist/gorm/dbal"
-	"sdm_demo_todolist/gorm/handlers"
+	"sdm_demo_todolist/no_orm/dbal"
+	"sdm_demo_todolist/no_orm/handlers"
 	"sdm_demo_todolist/shared"
 )
 
 func main() {
 	err := dbal.OpenDB()
 	if err != nil {
-		panic(err.Error())
+		println(err.Error())
+		return
 	}
 	defer func() {
 		_ = dbal.CloseDB()
@@ -24,7 +25,7 @@ func main() {
 	projectHandlers := handlers.NewProjectHandlers()
 	taskHandlers := handlers.NewTaskHandlers()
 
-	shared.AssignHandlers(myRouter, "gorm, sqlite3", projectHandlers, taskHandlers)
+	shared.AssignHandlers(myRouter, "database/sql, sqlite3", projectHandlers, taskHandlers)
 
 	log.Fatal(myRouter.Run(":8080"))
 }

@@ -1,48 +1,17 @@
-A project demonstrating how to use [SQL DAL Maker](https://github.com/panedrone/sqldalmaker) + Golang.
+package handlers
 
-[Part 1](./gorm): using "github.com/go-gorm/gorm".<br/>
-[Part 2](./sqlx): using "github.com/jmoiron/sqlx".<br/>
-[Part 3](./no_orm): using "database/sql" directly.
+import (
+	"errors"
+	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
+	"net/http"
+	"sdm_demo_todolist/no_orm/dbal"
+	"sdm_demo_todolist/no_orm/dbal/dto"
+	"sdm_demo_todolist/shared"
+	"sdm_demo_todolist/shared/request"
+	"sdm_demo_todolist/shared/resp"
+)
 
-Front-end is written in Vue.js 2.7.
-
-![sdm-todo-app.png](sdm-todo-app.png)
-
-sdm.xml:
-
-```xml
-
-<sdm>
-
-    <dto-class name="Project" ref="projects"/>
-
-    <dto-class name="ProjectLi" ref="projects">
-        <field type="int64$" column="p_tasks_count"/>
-    </dto-class>
-
-    <dto-class name="Task" ref="tasks"/>
-
-    <dto-class name="TaskLi" ref="tasks">
-        <field type="-" column="p_id"/>
-        <field type="-" column="t_comments"/>
-    </dto-class>
-
-    <dao-class name="ProjectsDao">
-        <crud dto="Project"/>
-        <query-dto-list method="ReadAll" dto="ProjectLi" ref="get_projects.sql"/>
-    </dao-class>
-
-    <dao-class name="TasksDao">
-        <crud table="tasks" dto="Task"/>
-        <query-dto-list method="ReadByProject(pId)" ref="get_project_tasks.sql" dto="TaskLi"/>
-    </dao-class>
-
-</sdm>
-```
-
-Generated code in action:
-
-```go
 type projectHandlers struct {
 	dao *dbal.ProjectsDao
 }
@@ -58,7 +27,7 @@ func (h *projectHandlers) ProjectCreate(ctx *gin.Context) {
 	if err := request.BindJSON(ctx, &req); err != nil {
 		return
 	}
-	if err := h.dao.CreateProject(ctx, &m.Project{PName: req.PName}); err != nil {
+	if err := h.dao.CreateProject(ctx, &dto.Project{PName: req.PName}); err != nil {
 		resp.Abort500(ctx, err)
 		return
 	}
@@ -89,6 +58,7 @@ func (h *projectHandlers) ProjectRead(ctx *gin.Context) {
 		return
 	}
 	resp.JSON(ctx, http.StatusOK, pr)
+
 }
 
 func (h *projectHandlers) ProjectUpdate(ctx *gin.Context) {
@@ -100,7 +70,7 @@ func (h *projectHandlers) ProjectUpdate(ctx *gin.Context) {
 	if err := request.BindJSON(ctx, &req); err != nil {
 		return
 	}
-	pr := &m.Project{PId: uri.PId, PName: req.PName}
+	pr := &dto.Project{PId: uri.PId, PName: req.PName}
 	if _, err := h.dao.UpdateProject(ctx, pr); err != nil {
 		resp.Abort500(ctx, err)
 	}
@@ -111,10 +81,9 @@ func (h *projectHandlers) ProjectDelete(ctx *gin.Context) {
 	if err != nil {
 		return
 	}
-	if _, err := h.dao.DeleteProject(ctx, &m.Project{PId: uri.PId}); err != nil {
+	if _, err := h.dao.DeleteProject(ctx, &dto.Project{PId: uri.PId}); err != nil {
 		resp.Abort500(ctx, err)
 		return
 	}
 	ctx.Status(http.StatusNoContent)
 }
-```

@@ -10,22 +10,40 @@
 <body>
 
 <div id="app" v-cloak>
-    <div>
-        <whoiam></whoiam>
-    </div>
-    <div class="red-banner">
-        <server_error></server_error>
-    </div>
+<!--    <table class="bg">-->
+<!--        <tr>-->
+<!--            <td>-->
+<!--                <div class="card">-->
+<!--                    <h2>-->
+<!--                        <whoiam></whoiam>-->
+<!--                    </h2>-->
+<!--                </div>-->
+<!--            </td>-->
+<!--        </tr>-->
+<!--        <tr>-->
+<!--            <td>-->
+<!--                <div class="red-banner">-->
+<!--                    <server_error></server_error>-->
+<!--                </div>-->
+<!--            </td>-->
+<!--        </tr>-->
+<!--    </table>-->
     <table class="bg" style="padding: 4px;">
         <tr>
             <td>
-                <projects></projects>
+                <div class="card">
+                    <projects></projects>
+                </div>
             </td>
             <td>
-                <project_details></project_details>
+                <div class="card">
+                    <project_details></project_details>
+                </div>
             </td>
             <td>
-                <task_details></task_details>
+                <div class="card">
+                    <task_details></task_details>
+                </div>
             </td>
         </tr>
     </table>
