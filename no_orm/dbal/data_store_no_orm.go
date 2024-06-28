@@ -6,8 +6,6 @@ import (
 	"database/sql/driver"
 	"errors"
 	"fmt"
-	// "github.com/google/uuid"
-	// "github.com/godror/godror"
 	"io"
 	"reflect"
 	"strconv"
@@ -16,15 +14,15 @@ import (
 )
 
 /*
-	This file is a part of SQL DAL Maker project: https://sqldalmaker.sourceforge.net
-	It demonstrates how to implement an interface DataStore in Go using "database/sql" package directly (no-orm-scenario).
+	This file is a part of SQL DAL Maker Project: https://sqldalmaker.sourceforge.net
+	It demonstrates how to implement an interface DataStore in Go using "database/sql" package directly (no-orm scenario).
 	More about DataStore: https://sqldalmaker.sourceforge.net/preconfig.html#ds
 	Recent version: https://github.com/panedrone/sqldalmaker/blob/master/src/resources/data_store_no_orm.go
 
 	Copy-paste this code to your project and change it for your needs.
 	Improvements are welcome: sqldalmaker@gmail.com
 
-	Demo project: https://github.com/panedrone/sdm_demo_todolist_golang
+	Demo project: https://github.com/panedrone/sdm_todolist_go_react_16_npm_sqlite3
 */
 
 type DataStore interface {
@@ -94,46 +92,43 @@ func (ds *_DS) Db() *sql.DB {
 
 /*
 
-// 	Implement "func (ds *_DS) initDb()" in an external file. This is an example:
-//
-// 	https://github.com/panedrone/sqldalmaker/blob/master/src/resources/data_store_no_orm_ex.go
+// 	Implement "func (ds *_DS) initDb()" in an external file:
 
 package dbal
 
 import (
-	"github.com/jmoiron/sqlx"
+	"database/sql"
    	// _ "github.com/mattn/go-sqlite3"      // SQLite3
    	// _ "github.com/denisenkom/go-mssqldb" // SQL Server
    	// _ "github.com/godror/godror"			// Oracle
-   	_ "github.com/go-sql-driver/mysql"      // MySQL
+   	// _ "github.com/go-sql-driver/mysql"   // MySQL
    	// _ "github.com/ziutek/mymysql/godrv"  // MySQL
-   	// _ "github.com/lib/pq"                // PostgeSQL
+   	_ "github.com/lib/pq"                   // PostgreSQL
 )
 
 func (ds *_DS) initDb() (err error) {
-	// === PostgeSQL ===========================
+	// === PostgreSQL ===========================
 	ds.paramPrefix = "$"
-	ds.db, err = sqlx.Open("postgres", "postgres://postgres:sa@localhost/my-tests?sslmode=disable")
-	// ds.db, err = sqlx.Open("postgres", "postgres://postgres:sa@localhost/my-tests?sslmode=verify-full")
+	ds.db, err = sql.Open("postgres", "postgres://postgres:sa@localhost/my-tests?sslmode=disable")
+	// ds.db, err = sql.Open("postgres", "postgres://postgres:sa@localhost/my-tests?sslmode=verify-full")
 	// === SQLite3 =============================
-	// ds.db, err = sqlx.Open("sqlite3", "./log.sqlite")
-	// ds.db, err = sqlx.Open("sqlite3", "./northwindEF.sqlite")
-	// === MySQL ===============================
-	// ds.db, err = sqlx.Open("mysql", "root:root@/sakila")
-	// ds.db, err = sqlx.Open("mymysql", "sakila/root/root")
+	// ds.db, err = sql.Open("sqlite3", "./log.sqlite")
+	// ds.db, err = sql.Open("sqlite3", "./northwindEF.sqlite")
 	// === SQL Server ==========================
 	// https://github.com/denisenkom/go-mssqldb
 	// The sqlserver driver uses normal MS SQL Server syntax and expects parameters in the
 	// sql query to be in the form of either @Name or @p1 to @pN (ordinal position).
 	// ensure sqlserver:// in beginning. this one is not valid:
-	// ------ ds.db, err = sqlx.Open("sqlserver", "sa:root@/localhost:1433/SQLExpress?database=AdventureWorks2014")
-	// this one is ok:
-	ds.paramPrefix = "@p"
-	ds.db, err = sqlx.Open("sqlserver", "sqlserver://sa:root@localhost:1433?database=AdventureWorks2014")
-	// === Oracle =============================
+	// ------ ds.db, err = sql.Open("sqlserver", "sa:root@/localhost:1433/SQLExpress?database=AdventureWorks2014")
+	// ds.paramPrefix = "@p"
+	// ds.db, err = sql.Open("sqlserver", "sqlserver://sa:root@localhost:1433?database=AdventureWorks2014")
+	// === MySQL ===============================
+	// ds.db, err = sql.Open("mysql", "root:root@/sakila")
+	// ds.db, err = sql.Open("mymysql", "sakila/root/root")
+	// === Oracle ==============================
 	// "github.com/godror/godror"
-	//ds.paramPrefix = ":"
-	//ds.db, err = sqlx.Open("godror", `user="ORDERS" password="root" connectString="localhost:1521/orcl"`)
+	// ds.paramPrefix = ":"
+	// ds.db, err = sql.Open("godror", `user="ORDERS" password="root" connectString="localhost:1521/orcl"`)
 	return
 }
 
@@ -461,8 +456,8 @@ func (ds *_DS) queryImplRcOracle(ctx context.Context, sqlString string, onRowArr
 				if err != nil {
 					return err
 				}
-				for i, colName := range colNames {
-					data[colName] = values[i]
+				for i, col := range colNames {
+					data[col] = values[i]
 				}
 				onRow(data)
 			}
@@ -517,8 +512,8 @@ func (ds *_DS) queryImplRc(ctx context.Context, sqlString string, onRowArr []int
 				if err != nil {
 					return err
 				}
-				for i, colName := range colNames {
-					data[colName] = values[i]
+				for i, col := range colNames {
+					data[col] = values[i]
 				}
 				onRow(data)
 			}
@@ -577,8 +572,8 @@ func fetchDriverRows(rows driver.Rows, onRowFunc interface{}) error {
 			if err != nil {
 				break
 			}
-			for i, colName := range colNames {
-				data[colName] = values[i]
+			for i, col := range colNames {
+				data[col] = values[i]
 			}
 			onRow(data)
 		}
@@ -792,8 +787,8 @@ func (ds *_DS) QueryRow(ctx context.Context, sqlString string, args ...interface
 	if err != nil {
 		return
 	}
-	for i, colName := range colNames {
-		row[colName] = values[i]
+	for i, col := range colNames {
+		row[col] = values[i]
 	}
 	if rows.Next() {
 		err = errMultipleRows(sqlString)
@@ -823,8 +818,8 @@ func (ds *_DS) QueryAllRows(ctx context.Context, sqlString string, onRow func(ma
 			if err != nil {
 				return err
 			}
-			for i, colName := range colNames {
-				data[colName] = values[i]
+			for i, col := range colNames {
+				data[col] = values[i]
 			}
 			onRow(data)
 		}
@@ -923,12 +918,10 @@ func (ds *_DS) formatSQL(sqlString string) string {
 
 /////////////////////////////////////////////////////////////
 
-func SetString(d *string, row map[string]interface{}, colName string, errMap map[string]int) {
-	value, err := _getValue(row, colName, errMap)
-	if err == nil {
-		err = _setString(d, value)
-		updateErrMap(err, colName, errMap)
-	}
+func SetString(d *string, row map[string]interface{}, col string, errMap map[string]int) {
+	_copy(row, col, errMap, func(value interface{}) error {
+		return _setString(d, value)
+	})
 }
 
 func _setString(d *string, value interface{}) error {
@@ -953,12 +946,10 @@ func _setString(d *string, value interface{}) error {
 	return nil
 }
 
-func SetInt64(d *int64, row map[string]interface{}, colName string, errMap map[string]int) {
-	value, err := _getValue(row, colName, errMap)
-	if err == nil {
-		err = _setInt64(d, value)
-		updateErrMap(err, colName, errMap)
-	}
+func SetInt64(d *int64, row map[string]interface{}, col string, errMap map[string]int) {
+	_copy(row, col, errMap, func(value interface{}) error {
+		return _setInt64(d, value)
+	})
 }
 
 func _setInt64(d *int64, value interface{}) error {
@@ -991,12 +982,10 @@ func _setInt64(d *int64, value interface{}) error {
 	return nil
 }
 
-func SetInt(d *int, row map[string]interface{}, colName string, errMap map[string]int) {
-	value, err := _getValue(row, colName, errMap)
-	if err == nil {
-		err = _setInt(d, value)
-		updateErrMap(err, colName, errMap)
-	}
+func SetInt(d *int, row map[string]interface{}, col string, errMap map[string]int) {
+	_copy(row, col, errMap, func(value interface{}) error {
+		return _setInt(d, value)
+	})
 }
 
 func _setInt(d *int, value interface{}) error {
@@ -1030,12 +1019,10 @@ func _setInt(d *int, value interface{}) error {
 	return nil
 }
 
-func SetInt32(d *int32, row map[string]interface{}, colName string, errMap map[string]int) {
-	value, err := _getValue(row, colName, errMap)
-	if err == nil {
-		err = _setInt32(d, value)
-		updateErrMap(err, colName, errMap)
-	}
+func SetInt32(d *int32, row map[string]interface{}, col string, errMap map[string]int) {
+	_copy(row, col, errMap, func(value interface{}) error {
+		return _setInt32(d, value)
+	})
 }
 
 func _setInt32(d *int32, value interface{}) error {
@@ -1067,12 +1054,10 @@ func _setInt32(d *int32, value interface{}) error {
 	return nil
 }
 
-func SetFloat32(d *float32, row map[string]interface{}, colName string, errMap map[string]int) {
-	value, err := _getValue(row, colName, errMap)
-	if err == nil {
-		err = _setFloat32(d, value)
-		updateErrMap(err, colName, errMap)
-	}
+func SetFloat32(d *float32, row map[string]interface{}, col string, errMap map[string]int) {
+	_copy(row, col, errMap, func(value interface{}) error {
+		return _setFloat32(d, value)
+	})
 }
 
 func _setFloat32(d *float32, value interface{}) error {
@@ -1082,7 +1067,7 @@ func _setFloat32(d *float32, value interface{}) error {
 	case float64:
 		*d = float32(v)
 	case []byte:
-		str := string(v) // PostgeSQL
+		str := string(v) // PostgreSQL
 		d64, err := strconv.ParseFloat(str, 64)
 		if err != nil {
 			return assignErr(d, value, "_setFloat32", err.Error())
@@ -1100,12 +1085,10 @@ func _setFloat32(d *float32, value interface{}) error {
 	return nil
 }
 
-func SetFloat64(d *float64, row map[string]interface{}, colName string, errMap map[string]int) {
-	value, err := _getValue(row, colName, errMap)
-	if err == nil {
-		err = _setFloat64(d, value)
-		updateErrMap(err, colName, errMap)
-	}
+func SetFloat64(d *float64, row map[string]interface{}, col string, errMap map[string]int) {
+	_copy(row, col, errMap, func(value interface{}) error {
+		return _setFloat64(d, value)
+	})
 }
 
 func _setFloat64(d *float64, value interface{}) error {
@@ -1115,7 +1098,7 @@ func _setFloat64(d *float64, value interface{}) error {
 	case float32:
 		*d = float64(v)
 	case []byte:
-		str := string(v) // PostgeSQL, MySQL
+		str := string(v) // PostgreSQL, MySQL
 		var err error
 		*d, err = strconv.ParseFloat(str, 64)
 		if err != nil {
@@ -1133,12 +1116,10 @@ func _setFloat64(d *float64, value interface{}) error {
 	return nil
 }
 
-func SetTime(d *time.Time, row map[string]interface{}, colName string, errMap map[string]int) {
-	value, err := _getValue(row, colName, errMap)
-	if err == nil {
-		err = _setTime(d, value)
-		updateErrMap(err, colName, errMap)
-	}
+func SetTime(d *time.Time, row map[string]interface{}, col string, errMap map[string]int) {
+	_copy(row, col, errMap, func(value interface{}) error {
+		return _setTime(d, value)
+	})
 }
 
 func _setTime(d *time.Time, value interface{}) error {
@@ -1151,12 +1132,10 @@ func _setTime(d *time.Time, value interface{}) error {
 	return nil
 }
 
-func SetBool(d *bool, row map[string]interface{}, colName string, errMap map[string]int) {
-	value, err := _getValue(row, colName, errMap)
-	if err == nil {
-		err = _setBool(d, value)
-		updateErrMap(err, colName, errMap)
-	}
+func SetBool(d *bool, row map[string]interface{}, col string, errMap map[string]int) {
+	_copy(row, col, errMap, func(value interface{}) error {
+		return _setBool(d, value)
+	})
 }
 
 func _setBool(d *bool, value interface{}) error {
@@ -1176,12 +1155,10 @@ func _setBool(d *bool, value interface{}) error {
 	return nil
 }
 
-func SetBytes(d *[]byte, row map[string]interface{}, colName string, errMap map[string]int) {
-	value, err := _getValue(row, colName, errMap)
-	if err == nil {
-		err = _setBytes(d, value)
-		updateErrMap(err, colName, errMap)
-	}
+func SetBytes(d *[]byte, row map[string]interface{}, col string, errMap map[string]int) {
+	_copy(row, col, errMap, func(value interface{}) error {
+		return _setBytes(d, value)
+	})
 }
 
 func _setBytes(d *[]byte, value interface{}) error {
@@ -1194,53 +1171,54 @@ func _setBytes(d *[]byte, value interface{}) error {
 	return nil
 }
 
-//func SetNumber(d *godror.Number, row map[string]interface{}, colName string, errMap map[string]int) {
-//	value, err := _getValue(row, colName, errMap)
-//	if err == nil {
-//		err = _setNumber(d, value)
-//		updateErrMap(err, colName, errMap)
-//	}
-//}
-//
-//func _setNumber(d *godror.Number, value interface{}) error {
-//	err := d.Scan(value)
-// 	if err != nil {
-// 		return assignErr(d, value, "_setNumber", err.Error())
-// 	}
-//	return err
-//}
+func SetNum(d interface{}, row map[string]interface{}, col string, errMap map[string]int) {
+	_copy(row, col, errMap, func(value interface{}) error {
+		s, ok := d.(sql.Scanner)
+		if ok {
+			return _scan(s, value)
+		}
+		return _setAny(d, value)
+	})
+}
 
-//func SetUUID(d *uuid.UUID, row map[string]interface{}, colName string, errMap map[string]int) {
-//	value, err := _getValue(row, colName, errMap)
-//	if err == nil {
-//		err = _setUUID(d, value)
-//		updateErrMap(err, colName, errMap)
-//	}
-//}
-//
-// func _setUUID(d *uuid.UUID, value interface{}) error {
-// 	err := d.Scan(value)
-// 	if err != nil {
-// 		return assignErr(d, value, "_setUUID", err.Error())
-// 	}
-// 	return nil
-// }
+func Scan(d sql.Scanner, row map[string]interface{}, col string, errMap map[string]int) {
+	_copy(row, col, errMap, func(value interface{}) error {
+		return _scan(d, value)
+	})
+}
 
-func _getValue(row map[string]interface{}, colName string, errMap map[string]int) (value interface{}, err error) {
+func _scan(d sql.Scanner, value interface{}) error {
+	err := d.Scan(value)
+	if err != nil {
+		return assignErr(d, value, "_scan", err.Error())
+	}
+	return nil
+}
+
+func _copy(row map[string]interface{}, col string, errMap map[string]int, fn func(value interface{}) error) {
 	var ok bool
-	value, ok = row[colName]
+	value, ok := row[col]
 	if !ok {
-		key := fmt.Sprintf("[%s] no such column", colName)
+		key := fmt.Sprintf("[%s] column not found", col)
 		count, ok := errMap[key]
 		if ok {
 			errMap[key] = count + 1
 		} else {
 			errMap[key] = 1
 		}
-		err = errors.New(key)
 		return
 	}
-	return
+	err := fn(value)
+	if err == nil {
+		return
+	}
+	key := fmt.Sprintf("[%s] %s", col, err.Error())
+	count, ok := errMap[key]
+	if ok {
+		errMap[key] = count + 1
+	} else {
+		errMap[key] = 1
+	}
 }
 
 func _setAny(dstPtr interface{}, value interface{}) error {
@@ -1251,30 +1229,35 @@ func _setAny(dstPtr interface{}, value interface{}) error {
 		}
 		return nil // leave as-is
 	}
-	var err error
+	n, ok := value.(driver.Valuer)
+	if ok {
+		v, err := n.Value()
+		if err == nil {
+			err = _setAny(dstPtr, v)
+		}
+		return err
+	}
 	switch d := dstPtr.(type) {
 	case *string:
-		err = _setString(d, value)
+		return _setString(d, value)
 	case *int:
-		err = _setInt(d, value)
+		return _setInt(d, value)
 	case *int32:
-		err = _setInt32(d, value)
+		return _setInt32(d, value)
 	case *int64:
-		err = _setInt64(d, value)
+		return _setInt64(d, value)
 	case *float64:
-		err = _setFloat64(d, value)
+		return _setFloat64(d, value)
 	case *float32:
-		err = _setFloat32(d, value)
+		return _setFloat32(d, value)
 	case *time.Time:
-		err = _setTime(d, value)
+		return _setTime(d, value)
 	case *bool:
-		err = _setBool(d, value)
+		return _setBool(d, value)
 	case *[]byte: // the same as uint8
-		err = _setBytes(d, value)
-	//case *godror.Number:
-	//	err = _setNumber(d, value)
-	//case *uuid.UUID:
-	//	err = _setUUID(d, value)
+		return _setBytes(d, value)
+	case sql.Scanner:
+		return _scan(d, value)
 	//case *[]string:
 	//	switch bv := value.(type) {
 	//	case []byte:
@@ -1302,10 +1285,8 @@ func _setAny(dstPtr interface{}, value interface{}) error {
 	case *interface{}:
 		*d = value
 		return nil
-	default:
-		return errUnexpectedType(dstPtr)
 	}
-	return err
+	return errUnexpectedType(dstPtr)
 }
 
 func SetRes(dstPtr interface{}, value interface{}) error {
@@ -1339,12 +1320,11 @@ func SetScalarValue(dstPtr interface{}, value interface{}, errMap map[string]int
 	}
 }
 
-func SetAny(dstPtr interface{}, row map[string]interface{}, colName string, errMap map[string]int) {
-	value, err := _getValue(row, colName, errMap)
-	if err != nil {
-		return
-	}
-	SetScalarValue(dstPtr, value, errMap)
+func SetAny(dstPtr interface{}, row map[string]interface{}, col string, errMap map[string]int) {
+	_copy(row, col, errMap, func(value interface{}) error {
+		SetScalarValue(dstPtr, value, errMap)
+		return nil
+	})
 }
 
 /////////////////////////////////////////////////////////////
@@ -1362,19 +1342,6 @@ func assignErr(dstPtr interface{}, value interface{}, funcName string, errMsg st
 
 func unknownTypeErr(dstPtr interface{}, value interface{}, funcName string) error {
 	return assignErr(dstPtr, value, funcName, "unknown type")
-}
-
-func updateErrMap(err error, colName string, errMap map[string]int) {
-	if err == nil {
-		return
-	}
-	key := fmt.Sprintf("[%s] %s", colName, err.Error())
-	count, ok := errMap[key]
-	if ok {
-		errMap[key] = count + 1
-	} else {
-		errMap[key] = 1
-	}
 }
 
 func errUnexpectedType(val interface{}) error {

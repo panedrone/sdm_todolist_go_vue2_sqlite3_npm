@@ -11,17 +11,56 @@
     <ide event-log="true"/>
 
     <jdbc jar="lib/sqlite-jdbc-3.45.1.0.jar" class="org.sqlite.JDBC"
-          url="jdbc:sqlite:$PROJECT_DIR$/todolist.sqlite" user="" pwd=""/>
+          url="jdbc:sqlite:$PROJECT_DIR$/db/todolist.sqlite" user="" pwd=""/>
 
     <type-map default="">
 
-        <type detected="int64$" target="int64${json} -> SetInt64"/>
+        <!-- sqlite3 -->
 
         <type detected="java.lang.Integer" target="int64${json} -> SetInt64"/>
         <type detected="java.lang.Double" target="float64${json} -> SetFloat64"/>
         <type detected="java.lang.String" target="string${json} -> SetString"/>
-        <type detected="byte[]" target="[]byte{$json} -> SetBytes"/>
+        <type detected="byte[]" target="[]byte${json} -> SetBytes"/>
         <type detected="java.lang.Object" target="interface{}${json}"/>
+
+        <!-- mysql, postgres, sql server -->
+
+        <!--        <type detected="java.util.UUID" target="github.com/google/uuid:uuid.UUID${json} -> SetUUID"/>-->
+        <!--        <type detected="java.sql.Array" target="[]string${json}"/>-->
+
+        <!--        <type detected="java.lang.Short" target="int16${json} -> SetInt16"/>-->
+        <!--        <type detected="java.lang.Integer" target="int32${json} -> SetInt32"/>-->
+        <!--        <type detected="java.lang.Long" target="int64${json} -> SetInt64"/>-->
+
+        <!--        <type detected="java.lang.Float" target="float32${json} -> SetFloat32"/>-->
+        <!--        <type detected="java.lang.Double" target="float64${json} -> SetFloat64"/>-->
+        <!--        <type detected="java.math.BigDecimal" target="float64${json} -> SetFloat64"/>-->
+
+        <!--        <type detected="java.lang.String" target="string${json} -> SetString"/>-->
+        <!--        <type detected="byte[]" target="[]byte${json} -> "/>-->
+        <!--        <type detected="java.lang.Boolean" target="bool${json} -> SetBool"/>-->
+
+        <!--        <type detected="java.util.Date" target="time:time.Time${json} -> SetTime"/>-->
+        <!--        <type detected="java.time.LocalDateTime" target="time:time.Time${json} -> SetTime"/>-->
+
+        <!--        <type detected="java.lang.Object" target="interface{}${json}"/>-->
+
+        <!-- oracle -->
+
+        <!--        <type detected="java.math.BigDecimal" target="${json-ora-num}"/>-->
+        <!--        <type detected="java.math.BigDecimal+auto" target="${json-ora-num}"/>-->
+        <!--        <type detected="java.lang.Double" target="float64${json} -> SetFloat64"/>-->
+
+        <!--        <type detected="java.lang.String" target="string${json} -> SetString"/>-->
+
+        <!--        <type detected="java.util.Date" target="${json-time}"/>-->
+        <!--        <type detected="java.time.ZonedDateTime" target="${json-time}"/>-->
+        <!--        <type detected="java.time.LocalDateTime" target="${json-time}"/>-->
+
+        <!--        <type detected="byte[]" target="string${json} -> SetBytes"/>-->
+        <!--        <type detected="java.lang.Boolean" target="int64${json} -> SetBool"/>-->
+
+        <!--        <type detected="java.lang.Object" target="interface{}{$json}"/>-->
 
     </type-map>
 
@@ -33,9 +72,24 @@
         <macro value="=built-in=" name="${TitleCase(column)}"/>
         <macro value="=built-in=" name="${kebab-case(column)}"/>
 
-        <macro name="${col}" value="${lower_snake_case(column)}"/>
+        <macro name="${json-col}" value="${lower_snake_case(column)}"/>
 
-        <macro name="${json}" value=" `json:&quot;${col}${0}&quot;`"/>
+        <macro name="${json}" value=" `json:&quot;${json-col}${0}&quot;`"/>
+
+        <macro name="${json-time}" value="time:time.Time${json} -> SetTime"/>
+
+        <macro name="${json-ora-num}" value="${ora-num} `json:&quot;${json-col}${0}&quot;` -> SetNum"/>
+
+        <macro name="${ora-num}">
+            <vm-xml>
+                <if var="$fi.Precision == 38 &amp;&amp; $fi.Scale == 0">
+                    <print var=" int64"/>
+                    <else>
+                        <print var=" github.com/godror/godror:godror.Number"/>
+                    </else>
+                </if>
+            </vm-xml>
+        </macro>
 
     </macros>
 

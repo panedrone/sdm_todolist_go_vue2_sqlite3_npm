@@ -117,7 +117,7 @@ func (h *projectHandlers) ProjectUpdate(ctx *gin.Context) {
 	if err := request.BindJSON(ctx, &req); err != nil {
 		return
 	}
-	if _, err := h.dao.UpdateProject(ctx, &dto.Project{PId: uri.PId, PName: req.PName}); err != nil {
+	if _, err := h.dao.UpdateProject(ctx, &dto.Project{PID: uri.PId, PName: req.PName}); err != nil {
 		resp.Abort500(ctx, err)
 	}
 }
@@ -138,7 +138,7 @@ func (h *projectHandlers) ProjectDelete(ctx *gin.Context) {
 	if err != nil {
 		return
 	}
-	if _, err := h.dao.DeleteProject(ctx, &dto.Project{PId: uri.PId}); err != nil {
+	if _, err := h.dao.DeleteProject(ctx, &dto.Project{PID: uri.PId}); err != nil {
 		resp.Abort500(ctx, err)
 		return
 	}

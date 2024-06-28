@@ -34,7 +34,7 @@ func (h *taskHandlers) TaskCreate(ctx *gin.Context) {
 		return
 	}
 	t := models.Task{}
-	t.PId = uri.PId
+	t.PID = uri.PId
 	t.TSubject = req.TSubject
 	t.TPriority = 1
 	t.TDate = datetime.NowLocalString()
@@ -119,7 +119,7 @@ func (h *taskHandlers) TaskDelete(ctx *gin.Context) {
 	if err != nil {
 		return
 	}
-	if _, err := h.dao.DeleteTask(ctx, &models.Task{TId: uri.TId}); err != nil {
+	if _, err := h.dao.DeleteTask(ctx, &models.Task{TID: uri.TId}); err != nil {
 		resp.Abort500(ctx, err)
 		return
 	}
